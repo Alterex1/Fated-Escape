@@ -37,10 +37,10 @@ public class EnemyManager : MonoBehaviour
         enemyAnimator.SetFloat("Speed", agent.velocity.magnitude);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider collide)
     {
 
-        if(collision.gameObject == playerTransform)
+        if(collide.tag == "Player")
         {
             enemyAnimator.SetFloat("Speed", 0f);
             enemyAnimator.SetBool("isAttacking", true);
@@ -50,9 +50,9 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
-    private void OnCollisionStay(Collision collision)
+    private void OnTriggerStay(Collider collide)
     {
-        if(collision.gameObject == playerTransform)
+        if(collide.tag == "Player")
         {
             enemyAnimator.SetBool("isAttacking", true);
             playerTransform.GetComponent<PlayerManager>().Hit(damage);
@@ -60,7 +60,7 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
-    private void OnCollisionExit()
+    private void OnTriggerExit()
     {
         enemyAnimator.SetBool("isAttacking", false);
         enemyAnimator.SetFloat("Speed", agent.velocity.magnitude);
