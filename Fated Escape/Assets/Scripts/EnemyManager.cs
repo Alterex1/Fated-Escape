@@ -5,35 +5,64 @@ using UnityEngine.AI;
 
 public class EnemyManager : MonoBehaviour
 {
-    public GameObject player;
+    public Transform playerTransform;
     public Animator enemyAnimator;
+    public float maxTime = 1.0f;
+    public float maxDistance = 1.0f;
     public float damage = 20f;
+    NavMeshAgent agent;
+    float timer = 0.0f;
 
     // Start is called before the first frame update
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
+        agent = GetComponent<NavMeshAgent>();
+        enemyAnimator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        GetComponent<NavMeshAgent>().destination = player.transform.position;
-        if(GetComponent<NavMeshAgent>().velocity.magnitude > 1)
+        timer -= Time.deltaTime;
+        if(timer < 0.0f)
         {
-            enemyAnimator.SetBool("isRunning", true);
+            float sqDistance = (playerTransform.position - agent.destination).magnitude;
+            if(sqDistance > maxDistance * maxDistance)
+            {
+                agent.destination = playerTransform.position;
+            }
+            
+            timer = maxTime;
         }
-        else
-        {
-            enemyAnimator.SetBool("isRunning", false);
-        }
+        enemyAnimator.SetFloat("Speed", agent.velocity.magnitude);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject == player)
+
+        if(collision.gameObject == playerTransform)
         {
-            player.GetComponent<PlayerManager>().Hit(damage);
+            enemyAnimator.SetFloat("Speed", 0f);
+            enemyAnimator.SetBool("isAttacking", true);
+            playerTransform.GetComponent<PlayerManager>().Hit(damage);
+            
+            
         }
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if(collision.gameObject == playerTransform)
+        {
+            enemyAnimator.SetBool("isAttacking", true);
+            playerTransform.GetComponent<PlayerManager>().Hit(damage);
+            enemyAnimator.SetFloat("Speed", 0f);
+        }
+    }
+
+    private void OnCollisionExit()
+    {
+        enemyAnimator.SetBool("isAttacking", false);
+        enemyAnimator.SetFloat("Speed", agent.velocity.magnitude);
     }
 }
