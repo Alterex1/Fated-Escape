@@ -31,7 +31,8 @@ public class Weapon : MonoBehaviour
         ui.setammo(magazine + "/" + ammo);
         ui.setWeaponToDisplay(0);
     }
-    private void FixedUpdate()
+
+    private void Update()
     {
         if (Time.time >= readyToFire)
         {
@@ -65,7 +66,6 @@ public class Weapon : MonoBehaviour
                 ammo = 0;
                 ui.setammo(magazine + "/" + ammo);
             }
-            ui.setammo(magazine + "/" + ammo);
         }
         else
         {
@@ -73,11 +73,16 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        ui.setammo(magazine + "/" + ammo);
+    }
+
     private void fire()
     {
         RaycastHit hit;
         magazine--;
-        ui.setammo(magazine + "/" + ammo);
+
         if (Physics.Raycast(cameraGameObject.transform.position, cameraGameObject.transform.forward, out hit))
         {
             Debug.DrawLine(transform.position, hit.point);
