@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Controller : MonoBehaviour
@@ -8,7 +6,7 @@ public class Controller : MonoBehaviour
     public float runSpeed = 20.0f;
     public float jumpForce = 2.0f;
     public float mouseSensitivity = 100.0f;
-    public GameObject cameraObject;
+    public Transform cameraTransform;
 
     private Rigidbody rb;
     private float verticalRotation = 0f;
@@ -24,7 +22,7 @@ public class Controller : MonoBehaviour
         float moveVertical = Input.GetAxis("Vertical");
 
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-        movement = transform.TransformDirection(movement);
+        movement = cameraTransform.TransformDirection(movement);
 
         if (Input.GetKey(KeyCode.LeftShift))
         {
@@ -47,6 +45,6 @@ public class Controller : MonoBehaviour
 
         verticalRotation -= rotateVertical;
         verticalRotation = Mathf.Clamp(verticalRotation, -90f, 90f);
-        cameraObject.transform.localRotation = Quaternion.Euler(verticalRotation, 0f, 0f);
+        cameraTransform.localRotation = Quaternion.Euler(verticalRotation, 0f, 0f);
     }
 }
