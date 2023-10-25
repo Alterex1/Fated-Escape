@@ -47,7 +47,7 @@ public class Weapon : MonoBehaviour
             animations.SetInteger("Movement", -1);
         }
 
-        if (Input.GetKeyDown(KeyCode.R) && !isReloading && ammo > 0)
+        if (Input.GetKeyDown(KeyCode.R) && !isReloading && ammo > 0 && magazine < magazineTemp)
         {
             reloadTime = reloadAnimationTime;
             animations.SetInteger("Reload", 1);

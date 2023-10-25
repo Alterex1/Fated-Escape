@@ -1832,9 +1832,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa98093b6391b844bbaa14d4d3755599, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ammo: {fileID: 584252088}
-  weaponIndicator:
-  - {fileID: 703567961}
 --- !u!114 &621508675
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2554,6 +2551,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 119002605111742436, guid: 3f1a1b811ad5c7643a1f42c003de3387, type: 3}
+      propertyPath: m_TagString
+      value: Ground
+      objectReference: {fileID: 0}
+    - target: {fileID: 1004610761960497565, guid: 3f1a1b811ad5c7643a1f42c003de3387, type: 3}
+      propertyPath: m_TagString
+      value: Ground
+      objectReference: {fileID: 0}
+    - target: {fileID: 1772360538526036660, guid: 3f1a1b811ad5c7643a1f42c003de3387, type: 3}
+      propertyPath: m_TagString
+      value: Ground
+      objectReference: {fileID: 0}
+    - target: {fileID: 1931618097583911897, guid: 3f1a1b811ad5c7643a1f42c003de3387, type: 3}
+      propertyPath: m_TagString
+      value: Ground
+      objectReference: {fileID: 0}
+    - target: {fileID: 1959184395728373499, guid: 3f1a1b811ad5c7643a1f42c003de3387, type: 3}
+      propertyPath: m_TagString
+      value: Ground
+      objectReference: {fileID: 0}
+    - target: {fileID: 4801874644947186536, guid: 3f1a1b811ad5c7643a1f42c003de3387, type: 3}
+      propertyPath: m_TagString
+      value: Ground
+      objectReference: {fileID: 0}
     - target: {fileID: 5829293123902916512, guid: 3f1a1b811ad5c7643a1f42c003de3387, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2597,6 +2618,22 @@ PrefabInstance:
     - target: {fileID: 6865025878112780940, guid: 3f1a1b811ad5c7643a1f42c003de3387, type: 3}
       propertyPath: m_Name
       value: TEST AREA
+      objectReference: {fileID: 0}
+    - target: {fileID: 6865025878112780940, guid: 3f1a1b811ad5c7643a1f42c003de3387, type: 3}
+      propertyPath: m_TagString
+      value: Ground
+      objectReference: {fileID: 0}
+    - target: {fileID: 6937276426826530542, guid: 3f1a1b811ad5c7643a1f42c003de3387, type: 3}
+      propertyPath: m_TagString
+      value: Ground
+      objectReference: {fileID: 0}
+    - target: {fileID: 7473117179242541295, guid: 3f1a1b811ad5c7643a1f42c003de3387, type: 3}
+      propertyPath: m_TagString
+      value: Ground
+      objectReference: {fileID: 0}
+    - target: {fileID: 8054213411525819879, guid: 3f1a1b811ad5c7643a1f42c003de3387, type: 3}
+      propertyPath: m_TagString
+      value: Ground
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2689,6 +2726,14 @@ PrefabInstance:
     - target: {fileID: 650291418977422186, guid: cc8b2d69ff689634884289470c2eda24, type: 3}
       propertyPath: m_Name
       value: DEMO AREA
+      objectReference: {fileID: 0}
+    - target: {fileID: 650291418977422186, guid: cc8b2d69ff689634884289470c2eda24, type: 3}
+      propertyPath: m_TagString
+      value: Ground
+      objectReference: {fileID: 0}
+    - target: {fileID: 821631308734748064, guid: cc8b2d69ff689634884289470c2eda24, type: 3}
+      propertyPath: m_TagString
+      value: Ground
       objectReference: {fileID: 0}
     - target: {fileID: 3229579138790111133, guid: cc8b2d69ff689634884289470c2eda24, type: 3}
       propertyPath: m_LocalScale.x
@@ -4438,8 +4483,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   runSpeed: 20
-  jumpForce: 2
-  mouseSensitivity: 10
+  jumpForce: 10
+  mouseSensitivity: 2
   cameraTransform: {fileID: 1538346068}
 --- !u!114 &1481644917
 MonoBehaviour:

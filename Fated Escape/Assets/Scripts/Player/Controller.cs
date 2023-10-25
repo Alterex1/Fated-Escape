@@ -7,6 +7,10 @@ public class Controller : MonoBehaviour
     public float jumpForce = 2.0f;
     public float mouseSensitivity = 100.0f;
     public Transform cameraTransform;
+    private float jumpCounter;
+    private bool isJumping = false;
+    private int jumpCount = 0;
+    private int maxJumpCount = 2; // Set maximum number of jumps
 
     private Rigidbody rb;
     private float verticalRotation = 0f;
@@ -33,9 +37,11 @@ public class Controller : MonoBehaviour
             transform.position += movement * speed * Time.deltaTime;
         }
 
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump") && jumpCount < maxJumpCount)
         {
             rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
+            isJumping = true;
+            jumpCount++;
         }
 
         float rotateHorizontal = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
@@ -46,5 +52,14 @@ public class Controller : MonoBehaviour
         verticalRotation -= rotateVertical;
         verticalRotation = Mathf.Clamp(verticalRotation, -90f, 90f);
         cameraTransform.localRotation = Quaternion.Euler(verticalRotation, 0f, 0f);
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isJumping = false;
+            jumpCount = 0; // Reset jump count when player touches the ground
+        }
     }
 }
