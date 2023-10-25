@@ -8,7 +8,7 @@ public class InputManager : MonoBehaviour
     [HideInInspector] public float horizontal;
     [HideInInspector] public float xValue, yValue;
 
-    public float sensitivity;
+    public float sensitivity = 1f;
 
     private void FixedUpdate()
     {

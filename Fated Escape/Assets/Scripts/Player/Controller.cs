@@ -5,7 +5,7 @@ public class Controller : MonoBehaviour
     public float speed = 10.0f;
     public float runSpeed = 20.0f;
     public float jumpForce = 2.0f;
-    public float mouseSensitivity = 100.0f;
+    public float mouseSensitivity = 10.0f;
     public Transform cameraTransform;
     private float jumpCounter;
     private bool isJumping = false;
