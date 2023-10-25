@@ -21,7 +21,7 @@ public class Weapon : MonoBehaviour
 
     private void Start()
     {
-        ui = GameObject.FindGameObjectWithTag("Player").GetComponent<AmmoManager>();
+        ui = GameObject.FindGameObjectWithTag("PlayerUI").GetComponent<AmmoManager>();
         animations = gameObject.GetComponent<Animator>();
         inputs = gameObject.GetComponent<InputManager>();
         animations.SetInteger("Movement", 0);

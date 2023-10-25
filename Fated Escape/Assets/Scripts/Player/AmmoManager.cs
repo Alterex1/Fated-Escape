@@ -11,26 +11,20 @@ public class AmmoManager : MonoBehaviour
 
     private void Start()
     {
-        for (int i = 0; i < weaponIndicator.Length; i++)
-        {
-            weaponIndicator[i].SetActive(false);
-        }
+        
     }
 
-    public void setammo(string i) 
+    public void setammo(string i)
     {
         ammo.text = i;
     }
 
-    public void setWeaponToDisplay(int e) 
+    public void setWeaponToDisplay(int e)
     {
-        for (int i = 0; i < weaponIndicator.Length; i++) 
-        {
-            if(i == e) weaponIndicator[i].SetActive(false);
-        }
         for (int i = 0; i < weaponIndicator.Length; i++)
         {
-            if (i == e) weaponIndicator[i].SetActive(true);
+            weaponIndicator[i].SetActive(i == e);
         }
     }
+
 }
