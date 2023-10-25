@@ -12,6 +12,7 @@ TagManager:
   - Ladder
   - AI
   - Ground
+  - PlayerUI
   layers:
   - Default
   - TransparentFX
