@@ -540,7 +540,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6337946446479627470, guid: 4e14536821986c54bb8c6d3160c19cfc, type: 3}
       propertyPath: m_Speed
-      value: 2.927542
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6337946446479627470, guid: 4e14536821986c54bb8c6d3160c19cfc, type: 3}
+      propertyPath: m_AngularSpeed
+      value: 240
       objectReference: {fileID: 0}
     - target: {fileID: 6337946446479627470, guid: 4e14536821986c54bb8c6d3160c19cfc, type: 3}
       propertyPath: m_StoppingDistance
@@ -1485,7 +1489,7 @@ MonoBehaviour:
   horizontal: 0
   xValue: 0
   yValue: 0
-  sensitivity: 0
+  sensitivity: 1
 --- !u!114 &444154364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4065,7 +4069,7 @@ ParticleSystem:
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
     m_Rotation: {x: 0, y: 0, z: 0}
-    m_Scale: {x: 100, y: 1, z: 100}
+    m_Scale: {x: 250, y: 1, z: 250}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
