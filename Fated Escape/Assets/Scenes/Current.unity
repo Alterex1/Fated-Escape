@@ -1869,7 +1869,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ammo: {fileID: 584252088}
   weaponIndicator:
-  - {fileID: 0}
+  - {fileID: 703567961}
 --- !u!114 &621508675
 MonoBehaviour:
   m_ObjectHideFlags: 0
