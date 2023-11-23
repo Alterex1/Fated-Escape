@@ -15,7 +15,7 @@ public class Weapon : MonoBehaviour
     public float reloadAnimationTime = 2.5f;
     public int magazine = 30, ammo, mags = 3;
 
-    private float readyToFire;
+    private float readyToFire = 0;
     private int magazineTemp;
     public bool isReloading = false;
 
@@ -37,8 +37,11 @@ public class Weapon : MonoBehaviour
         if (Time.time >= readyToFire)
         {
             animations.SetInteger("Fire", -1);
-            animations.SetInteger("Movement", (inputs.vertical == 0 && inputs.horizontal == 0) ? 0 : 1);
+            // Determine if the player is idle, walking, or sprinting
+            int movementValue = Input.GetKeyDown(KeyCode.LeftShift) ? 2 : (inputs.vertical == 0 && inputs.horizontal == 0) ? 0 : 1;
+            animations.SetInteger("Movement", movementValue);
         }
+
         if (Input.GetMouseButton(0) && Time.time >= readyToFire && !isReloading && magazine > 0)
         {
             readyToFire = Time.time + 1f / fireRate;
@@ -53,6 +56,7 @@ public class Weapon : MonoBehaviour
             animations.SetInteger("Reload", 1);
             isReloading = true;
         }
+
         if (isReloading && reloadTime <= 1)
         {
             reloadTime = 0;

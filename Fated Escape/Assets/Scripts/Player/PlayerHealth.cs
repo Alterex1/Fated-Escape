@@ -24,6 +24,8 @@ public class PlayerHealth : MonoBehaviour
     public float fadeSpeed;
     private float durationTimer;
 
+    private const float invincibilitySeconds = 0.05f;
+
 
     // Start is called before the first frame update
     void Start()
@@ -37,21 +39,12 @@ public class PlayerHealth : MonoBehaviour
         health = Mathf.Clamp(health, 0, maxHealth);
         UpdateHealthUI();
 
-
-
         elapsedTime += Time.deltaTime;
-
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            TakeDamage(10);
-            elapsedTime = 0f;
-        }
         if (elapsedTime > 5f && health < maxHealth)
         {
             RestorHealth(2);
             elapsedTime = 4.9f;
         }
-
     }
 
     public void UpdateHealthUI()
@@ -108,7 +101,9 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        if (elapsedTime < invincibilitySeconds) return;
         health -= damage;
+        elapsedTime = 0f;
         lerpTimer = 0f;
     }
 

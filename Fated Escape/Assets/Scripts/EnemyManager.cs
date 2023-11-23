@@ -13,8 +13,10 @@ public class EnemyManager : MonoBehaviour
     NavMeshAgent agent;
     float timer = 0.0f;
 
+    private int health = 100;
+
     private float lastAttack = 0;
-    private const float attackSpeed = 0.5f;
+    private const float attackSpeed = 1.5f;
 
     // Start is called before the first frame update
     void Start()
@@ -49,7 +51,7 @@ public class EnemyManager : MonoBehaviour
             lastAttack = 0;
             enemyAnimator.SetFloat("Speed", 0f);
             enemyAnimator.SetBool("isAttacking", true);
-            playerTransform.GetComponent<PlayerManager>().Hit(damage);
+            playerTransform.GetComponent<PlayerHealth>().TakeDamage(damage);
         }
     }
 
