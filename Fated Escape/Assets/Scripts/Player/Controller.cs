@@ -2,64 +2,47 @@ using UnityEngine;
 
 public class Controller : MonoBehaviour
 {
-    public float speed = 10.0f;
-    public float runSpeed = 20.0f;
-    public float jumpForce = 2.0f;
-    public float mouseSensitivity = 10.0f;
-    public Transform cameraTransform;
-    private float jumpCounter;
-    private bool isJumping = false;
+    public CharacterController controller;
+
+    public float speed = 15.0f;
+    public float runSpeed = 25.0f;
+    public float gravity = -15.0f;
+    public float jumpForce = 4.0f;
+    public Transform groundCheck;
+    public float groundDistance = 1.0f;
+    public LayerMask groundMask;
+
+    private Vector3 velocity;
+    private bool isGrounded;
+
     private int jumpCount = 0;
-    private int maxJumpCount = 2; // Set maximum number of jumps
-
-    private Rigidbody rb;
-    private float verticalRotation = 0f;
-
-    void Start()
-    {
-        rb = GetComponent<Rigidbody>();
-    }
+    private int extraJumpCount = 1;
 
     void Update()
     {
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
+        // Player Movement
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        if (isGrounded) {
+            jumpCount = 0;
+            if (velocity.y < 0)
+                velocity.y = -5f;
+        }
 
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-        movement = cameraTransform.TransformDirection(movement);
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
 
+        Vector3 move = transform.right * x + transform.forward * z;
         if (Input.GetKey(KeyCode.LeftShift))
-        {
-            transform.position += movement * runSpeed * Time.deltaTime;
-        }
+            controller.Move(move * runSpeed * Time.deltaTime);
         else
-        {
-            transform.position += movement * speed * Time.deltaTime;
-        }
-
-        if (Input.GetButtonDown("Jump") && jumpCount < maxJumpCount)
-        {
-            rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
-            isJumping = true;
+            controller.Move(move * speed * Time.deltaTime);
+        
+        if (Input.GetButtonDown("Jump") && (isGrounded || jumpCount < extraJumpCount)) {
+            velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
             jumpCount++;
         }
 
-        float rotateHorizontal = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        float rotateVertical = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
-
-        transform.Rotate(0, rotateHorizontal, 0);
-
-        verticalRotation -= rotateVertical;
-        verticalRotation = Mathf.Clamp(verticalRotation, -90f, 90f);
-        cameraTransform.localRotation = Quaternion.Euler(verticalRotation, 0f, 0f);
-    }
-
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            isJumping = false;
-            jumpCount = 0; // Reset jump count when player touches the ground
-        }
+        velocity.y += gravity * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
     }
 }
