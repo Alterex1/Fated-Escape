@@ -47,7 +47,11 @@ public class EnemyManager : MonoBehaviour
     public void takeDamage(double damage)
     {
         health -= damage;
-        if (health <= 0) Destroy(this.gameObject);
+        if (health <= 0)
+        {
+            Destroy(this.gameObject);
+            playerTransform.GetComponentInChildren<Weapon>().addKill();
+        }
     }
 
     private void attackPlayer()

@@ -1,44 +1,72 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Weapon : MonoBehaviour
 {
-    public AmmoManager ui;
+    // UI management
+    public GameObject crosshair;
+    public AmmoManager ammoManager;
 
-    public float fireRate = 4f;
+    // Animation and movement
     public GameObject cameraGameObject;
     public GameObject bulletEffect, hitEffect;
     private Animator animations;
     private InputManager inputs;
-    private float reloadTime = 0;
-    public float reloadAnimationTime = 2.5f;
-    public int magazine, ammo;
-    public int maxAmmo, magazineCap = 30, magCount = 3;
 
-    public float damage = 10f;
+    // Gun related variables
+    public float fireRate = 4f, reloadTime = 0f, reloadAnimationTime = 2.5f;
+    public int magazine, ammo, maxAmmo, magazineCap = 30, magCount = 3;
 
+    // Reloading
     private float readyToFire = 0;
-    private int magazineTemp;
     public bool isReloading = false;
+
+    // Gun stats
+    private int kills = 0;
+    public float damage = 10f, damageUpgrade = 5f;
+    public int[] killThreshold =
+    {
+        5,
+        10,
+        20,
+        30
+    };
 
     private void Start()
     {
-        ui = GameObject.FindGameObjectWithTag("PlayerUI").GetComponent<AmmoManager>();
+        // Get components
+        ammoManager = GameObject.FindGameObjectWithTag("PlayerUI").GetComponent<AmmoManager>();
         animations = gameObject.GetComponent<Animator>();
         inputs = gameObject.GetComponent<InputManager>();
+
+        // Start animations
         animations.SetInteger("Movement", 0);
 
+        // Determine capacity of current gun
         magazine = magazineCap;
         maxAmmo = magazineCap * magCount;
         ammo = maxAmmo;
 
-        ui.setammo(magazine + "/" + ammo);
-        ui.setWeaponToDisplay(0);
+        // Update UI
+        ammoManager.setammo(magazine + "/" + ammo);
+        ammoManager.setWeaponToDisplay(0);
     }
 
     private void Update()
     {
+        // Detect if aiming at enemy
+        RaycastHit hit;
+        if (Physics.Raycast(cameraGameObject.transform.position, cameraGameObject.transform.forward, out hit) && hit.transform.tag == "Enemy")
+        {
+            crosshair.GetComponent<Image>().color = new Color(156f / 255f, 14f / 255f, 33f / 255f);
+        }
+        else
+        {
+            crosshair.GetComponent<Image>().color = new Color(1f, 1f, 1f);
+        }
+
         if (Time.time >= readyToFire)
         {
             animations.SetInteger("Fire", -1);
@@ -81,9 +109,22 @@ public class Weapon : MonoBehaviour
         ammo = Mathf.Max(0, Mathf.Min(ammo + ammoDelta, maxAmmo));
     }
 
+    public void addKill()
+    {
+        kills++;
+        foreach (int threshold in killThreshold)
+        {
+            if (kills == threshold)
+            {
+                Debug.Log("Damage upgraded by " + damageUpgrade);
+                damage += damageUpgrade;
+            }
+        }
+    }
+
     private void LateUpdate()
     {
-        ui.setammo(magazine + "/" + ammo);
+        ammoManager.setammo(magazine + "/" + ammo);
     }
 
     private void fire()
