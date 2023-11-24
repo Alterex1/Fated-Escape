@@ -15,6 +15,8 @@ public class Weapon : MonoBehaviour
     public float reloadAnimationTime = 2.5f;
     public int magazine = 30, ammo, mags = 3;
 
+    public float damage = 10f;
+
     private float readyToFire = 0;
     private int magazineTemp;
     public bool isReloading = false;
@@ -37,9 +39,9 @@ public class Weapon : MonoBehaviour
         if (Time.time >= readyToFire)
         {
             animations.SetInteger("Fire", -1);
-            // Determine if the player is idle, walking, or sprinting
-            int movementValue = Input.GetKeyDown(KeyCode.LeftShift) ? 2 : (inputs.vertical == 0 && inputs.horizontal == 0) ? 0 : 1;
-            animations.SetInteger("Movement", movementValue);
+            // int movementValue = Input.GetKey(KeyCode.LeftShift) ? 2 : (inputs.vertical == 0 && inputs.horizontal == 0) ? 0 : 1;
+            // Debug.Log(Input.GetKey(KeyCode.LeftShift));
+            animations.SetInteger("Movement", (inputs.vertical == 0 && inputs.horizontal == 0) ? 0 : 1);
         }
 
         if (Input.GetMouseButton(0) && Time.time >= readyToFire && !isReloading && magazine > 0)
@@ -89,7 +91,9 @@ public class Weapon : MonoBehaviour
 
         if (Physics.Raycast(cameraGameObject.transform.position, cameraGameObject.transform.forward, out hit))
         {
-            Debug.DrawLine(transform.position, hit.point);
+            // Debug.DrawLine(transform.position, hit.point);
+            EnemyManager enemyManager = hit.transform.GetComponent<EnemyManager>();
+            if (enemyManager != null) enemyManager.takeDamage(damage);
             Instantiate(bulletEffect, hit.point, Quaternion.LookRotation(hit.normal));
         }
     }

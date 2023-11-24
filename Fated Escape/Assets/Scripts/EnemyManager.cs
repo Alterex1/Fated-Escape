@@ -13,7 +13,7 @@ public class EnemyManager : MonoBehaviour
     NavMeshAgent agent;
     float timer = 0.0f;
 
-    private int health = 100;
+    public double health = 100;
 
     private float lastAttack = 0;
     private const float attackSpeed = 1.5f;
@@ -44,7 +44,14 @@ public class EnemyManager : MonoBehaviour
         enemyAnimator.SetFloat("Speed", agent.velocity.magnitude);
     }
 
-    private void attackPlayer() {
+    public void takeDamage(double damage)
+    {
+        health -= damage;
+        if (health <= 0) Destroy(this.gameObject);
+    }
+
+    private void attackPlayer()
+    {
         // Make sure that enemy can't spam attacks
         if (lastAttack >= attackSpeed)
         {
@@ -57,18 +64,12 @@ public class EnemyManager : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject == playerTransform.gameObject)
-        {
-            attackPlayer();
-        }
+        if (collision.gameObject == playerTransform.gameObject) attackPlayer();
     }
 
     private void OnCollisionStay(Collision collision)
     {
-        if(collision.gameObject == playerTransform.gameObject)
-        {
-            attackPlayer();
-        }
+        if (collision.gameObject == playerTransform.gameObject) attackPlayer();
     }
 
     private void OnCollisionExit()
