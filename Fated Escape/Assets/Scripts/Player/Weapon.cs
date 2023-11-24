@@ -8,7 +8,7 @@ public class Weapon : MonoBehaviour
 
     public float fireRate = 4f;
     public GameObject cameraGameObject;
-    public GameObject bulletEffect;
+    public GameObject bulletEffect, hitEffect;
     private Animator animations;
     private InputManager inputs;
     private float reloadTime = 0;
@@ -91,10 +91,16 @@ public class Weapon : MonoBehaviour
 
         if (Physics.Raycast(cameraGameObject.transform.position, cameraGameObject.transform.forward, out hit))
         {
-            // Debug.DrawLine(transform.position, hit.point);
             EnemyManager enemyManager = hit.transform.GetComponent<EnemyManager>();
-            if (enemyManager != null) enemyManager.takeDamage(damage);
-            Instantiate(bulletEffect, hit.point, Quaternion.LookRotation(hit.normal));
+            if (enemyManager != null)
+            {
+                enemyManager.takeDamage(damage);
+                Instantiate(hitEffect, hit.point, Quaternion.LookRotation(hit.normal));
+            }
+            else
+            {
+                Instantiate(bulletEffect, hit.point, Quaternion.LookRotation(hit.normal));
+            }
         }
     }
 }
