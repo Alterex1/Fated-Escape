@@ -13,7 +13,8 @@ public class Weapon : MonoBehaviour
     private InputManager inputs;
     private float reloadTime = 0;
     public float reloadAnimationTime = 2.5f;
-    public int magazine = 30, ammo, mags = 3;
+    public int magazine, ammo;
+    public int maxAmmo, magazineCap = 30, magCount = 3;
 
     public float damage = 10f;
 
@@ -27,8 +28,10 @@ public class Weapon : MonoBehaviour
         animations = gameObject.GetComponent<Animator>();
         inputs = gameObject.GetComponent<InputManager>();
         animations.SetInteger("Movement", 0);
-        ammo = magazine * mags;
-        magazineTemp = magazine;
+
+        magazine = magazineCap;
+        maxAmmo = magazineCap * magCount;
+        ammo = maxAmmo;
 
         ui.setammo(magazine + "/" + ammo);
         ui.setWeaponToDisplay(0);
@@ -39,8 +42,6 @@ public class Weapon : MonoBehaviour
         if (Time.time >= readyToFire)
         {
             animations.SetInteger("Fire", -1);
-            // int movementValue = Input.GetKey(KeyCode.LeftShift) ? 2 : (inputs.vertical == 0 && inputs.horizontal == 0) ? 0 : 1;
-            // Debug.Log(Input.GetKey(KeyCode.LeftShift));
             animations.SetInteger("Movement", (inputs.vertical == 0 && inputs.horizontal == 0) ? 0 : 1);
         }
 
@@ -52,7 +53,7 @@ public class Weapon : MonoBehaviour
             animations.SetInteger("Movement", -1);
         }
 
-        if (Input.GetKeyDown(KeyCode.R) && !isReloading && ammo > 0 && magazine < magazineTemp)
+        if (Input.GetKeyDown(KeyCode.R) && !isReloading && ammo > 0 && magazine < magazineCap)
         {
             reloadTime = reloadAnimationTime;
             animations.SetInteger("Reload", 1);
@@ -64,19 +65,20 @@ public class Weapon : MonoBehaviour
             reloadTime = 0;
             animations.SetInteger("Reload", -1);
             isReloading = false;
-            ammo = ammo - 30 + magazine;
-            magazine = magazineTemp;
-            if (ammo < 0)
-            {
-                magazine += ammo;
-                ammo = 0;
-                ui.setammo(magazine + "/" + ammo);
-            }
+
+            int delta = Mathf.Min(magazineCap - magazine, ammo);
+            magazine += delta;
+            updateAmmo(-delta);
         }
         else
         {
             reloadTime -= Time.deltaTime;
         }
+    }
+
+    public void updateAmmo(int ammoDelta)
+    {
+        ammo = Mathf.Max(0, Mathf.Min(ammo + ammoDelta, maxAmmo));
     }
 
     private void LateUpdate()
