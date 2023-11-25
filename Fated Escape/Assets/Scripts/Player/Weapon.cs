@@ -19,6 +19,9 @@ public class Weapon : MonoBehaviour
     public float fireRate = 4f, reloadTime = 0f, reloadAnimationTime = 2.5f;
     public int magazine, ammo, maxAmmo, magazineCap = 30, magCount = 3;
 
+    public List<AudioClip> gunfireSounds, reloadSounds;
+    public AudioSource gunSource;
+
     // Reloading
     private float readyToFire = 0;
     public bool isReloading = false;
@@ -59,13 +62,9 @@ public class Weapon : MonoBehaviour
         // Detect if aiming at enemy
         RaycastHit hit;
         if (Physics.Raycast(cameraGameObject.transform.position, cameraGameObject.transform.forward, out hit) && hit.transform.tag == "Enemy")
-        {
             crosshair.GetComponent<Image>().color = new Color(156f / 255f, 14f / 255f, 33f / 255f);
-        }
         else
-        {
             crosshair.GetComponent<Image>().color = new Color(1f, 1f, 1f);
-        }
 
         if (Time.time >= readyToFire)
         {
@@ -75,8 +74,9 @@ public class Weapon : MonoBehaviour
 
         if (Input.GetMouseButton(0) && Time.time >= readyToFire && !isReloading && magazine > 0)
         {
-            readyToFire = Time.time + 1f / fireRate;
             fire();
+            PlayFire();
+            readyToFire = Time.time + 1f / fireRate;
             animations.SetInteger("Fire", 2);
             animations.SetInteger("Movement", -1);
         }
@@ -104,6 +104,27 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    private void PlaySound(List<AudioClip> availableSounds)
+    {
+        gunSource.pitch = Random.Range(0.95f, 1.05f);
+        gunSource.PlayOneShot(availableSounds[Random.Range(0, availableSounds.Count)], Random.Range(0.65f, 0.85f));
+    }
+
+    public void PlayReload()
+    {
+        PlaySound(reloadSounds);
+    }
+
+    public void PlayFire()
+    {
+        PlaySound(gunfireSounds);
+    }
+
+    private void LateUpdate()
+    {
+        ammoManager.setammo(magazine + "/" + ammo);
+    }
+
     public void updateAmmo(int ammoDelta)
     {
         ammo = Mathf.Max(0, Mathf.Min(ammo + ammoDelta, maxAmmo));
@@ -120,11 +141,6 @@ public class Weapon : MonoBehaviour
                 damage += damageUpgrade;
             }
         }
-    }
-
-    private void LateUpdate()
-    {
-        ammoManager.setammo(magazine + "/" + ammo);
     }
 
     private void fire()

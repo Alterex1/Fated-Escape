@@ -5,6 +5,7 @@ using UnityEngine;
 public class AmmoBox : MonoBehaviour
 {
     public Transform playerTransform;
+    public AudioClip interactionSound;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,6 +23,7 @@ public class AmmoBox : MonoBehaviour
         if (collision.gameObject == playerTransform.gameObject)
         {
             playerTransform.GetComponentInChildren<Weapon>().updateAmmo(90);
+            AudioSource.PlayClipAtPoint(interactionSound, playerTransform.position, 0.75f);
             Destroy(this.transform.parent.gameObject);
         }
     }
