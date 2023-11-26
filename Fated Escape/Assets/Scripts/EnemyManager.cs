@@ -54,17 +54,9 @@ public class EnemyManager : MonoBehaviour
         if (health <= 0)
         {
             playerTransform.GetComponentInChildren<Weapon>().addKill();
-            StartCoroutine(deathCoroutine());
+            PlayDeath();
+            Destroy(this.gameObject);
         }
-    }
-
-    IEnumerator deathCoroutine()
-    {
-        PlayDeath();
-        enemyAnimator.SetFloat("Speed", 0f);
-        Destroy(GetComponent<NavMeshAgent>());
-        yield return new WaitForSeconds(1f);
-        Destroy(this.gameObject);
     }
 
     private void attackPlayer()

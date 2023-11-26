@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class AmmoManager : MonoBehaviour
 {
-    public Text ammo;
+    public TMPro.TextMeshProUGUI ammo;
 
     public GameObject[] weaponIndicator = new GameObject[1];
 
