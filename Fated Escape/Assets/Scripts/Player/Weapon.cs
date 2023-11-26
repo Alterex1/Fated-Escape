@@ -17,9 +17,9 @@ public class Weapon : MonoBehaviour
 
     // Gun related variables
     public float fireRate = 4f, reloadTime = 0f, reloadAnimationTime = 2.5f;
-    public int magazine, ammo, maxAmmo, magazineCap = 30, magCount = 3;
+    public int magazine, ammo, maxAmmo, magazineCap = 30, magCount = 5;
 
-    public List<AudioClip> gunfireSounds, reloadSounds;
+    public List<AudioClip> gunfireSounds, reloadSounds, levelupSounds;
     public AudioSource gunSource;
 
     // Reloading
@@ -27,15 +27,7 @@ public class Weapon : MonoBehaviour
     public bool isReloading = false;
 
     // Gun stats
-    private int kills = 0;
     public float damage = 10f, damageUpgrade = 5f;
-    public int[] killThreshold =
-    {
-        5,
-        10,
-        20,
-        30
-    };
 
     private void Start()
     {
@@ -110,6 +102,7 @@ public class Weapon : MonoBehaviour
         gunSource.PlayOneShot(availableSounds[Random.Range(0, availableSounds.Count)], Random.Range(0.65f, 0.85f));
     }
 
+    // Sound helper functions
     public void PlayReload()
     {
         PlaySound(reloadSounds);
@@ -118,6 +111,11 @@ public class Weapon : MonoBehaviour
     public void PlayFire()
     {
         PlaySound(gunfireSounds);
+    }
+
+    public void PlayLevelUp()
+    {
+        PlaySound(levelupSounds);
     }
 
     private void LateUpdate()
@@ -130,17 +128,34 @@ public class Weapon : MonoBehaviour
         ammo = Mathf.Max(0, Mathf.Min(ammo + ammoDelta, maxAmmo));
     }
 
+    // Gun upgrade stats
+    private int kills = 0, currentThreshold = 0;
+
+    public int[] killThreshold =
+    {
+        5,
+        10,
+        20,
+        30
+    };
+
     public void addKill()
     {
         kills++;
-        foreach (int threshold in killThreshold)
+        if (currentThreshold >= killThreshold.Length) return;
+        if (kills == killThreshold[currentThreshold])
         {
-            if (kills == threshold)
-            {
-                Debug.Log("Damage upgraded by " + damageUpgrade);
-                damage += damageUpgrade;
-            }
+            Debug.Log("Damage upgraded by " + damageUpgrade);
+            StartCoroutine(LevelUpCoroutine());
         }
+    }
+
+    private IEnumerator LevelUpCoroutine()
+    {
+        yield return new WaitForSeconds(0.75f);
+        PlayLevelUp();
+        damage += damageUpgrade;
+        currentThreshold++;
     }
 
     private void fire()
