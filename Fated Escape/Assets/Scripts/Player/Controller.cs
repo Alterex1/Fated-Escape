@@ -47,7 +47,7 @@ public class Controller : MonoBehaviour
         if (Input.GetButtonDown("Jump") && (isGrounded || jumpCount < extraJumpCount)) {
             footsteps.Stop();
             if (isGrounded)
-                footsteps.PlayOneShot(jumpSound, Random.Range(0.5f, 1f));
+                AudioSource.PlayClipAtPoint(jumpSound, this.transform.position);
             
             velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
             jumpCount++;
