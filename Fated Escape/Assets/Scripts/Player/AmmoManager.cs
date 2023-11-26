@@ -7,7 +7,7 @@ public class AmmoManager : MonoBehaviour
 {
     public Text ammo;
 
-    public GameObject[] weaponIndicator = new GameObject[1];
+    public GameObject[] weaponIndicator = new GameObject[3];
 
     private void Start()
     {
@@ -23,7 +23,12 @@ public class AmmoManager : MonoBehaviour
     {
         for (int i = 0; i < weaponIndicator.Length; i++)
         {
-            weaponIndicator[i].SetActive(i == e);
+            if (i == e)
+            {
+                weaponIndicator[i].SetActive(true);
+            }
+            else
+                weaponIndicator[i].SetActive(false);
         }
     }
 

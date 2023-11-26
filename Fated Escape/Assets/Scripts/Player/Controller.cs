@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class Controller : MonoBehaviour
 {
+    public AmmoManager gunOnDisplay;
+
     public CharacterController controller;
 
     public float speed = 15.0f;
@@ -17,6 +19,9 @@ public class Controller : MonoBehaviour
 
     private int jumpCount = 0;
     private int extraJumpCount = 1;
+
+    public float weaponInstance;
+    public GameObject[] weapons = new GameObject[3];
 
     void Update()
     {
@@ -44,5 +49,48 @@ public class Controller : MonoBehaviour
 
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
+
+        if (Input.GetKey(KeyCode.Alpha1)) 
+        {
+            switchWeapons(1);
+        }
+
+        if (Input.GetKey(KeyCode.Alpha2))
+        {
+            switchWeapons(2);
+        }
+
+        if (Input.GetKey(KeyCode.Alpha3))
+        {
+            switchWeapons(3);
+        }
     }
+
+    public void Start()
+    {
+        switchWeapons(1);
+    }
+
+    public void switchWeapons(int index)
+    {
+        Debug.Log("Switching to weapon: " + index);
+
+        for (int i = 0; i < weapons.Length; i++)
+        {
+            if (i == index - 1)
+            {
+                weapons[i].SetActive(true);
+                Debug.Log("Activating weapon: " + i);
+            }
+            else
+            {
+                weapons[i].SetActive(false);
+                Debug.Log("Deactivating weapon: " + i);
+            }
+        }
+        weaponInstance = index;
+        Debug.Log("Updating UI for weapon: " + index); // Add this line
+        gunOnDisplay.setWeaponToDisplay(index - 1);
+    }
+
 }
