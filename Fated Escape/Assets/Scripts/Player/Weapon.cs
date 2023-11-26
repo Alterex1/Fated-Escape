@@ -122,7 +122,7 @@ public class Weapon : MonoBehaviour
 
     private void LateUpdate()
     {
-        ammoManager.setammo(magazine + "/" + ammo);
+        ammoManager.setammo(magazine + "\n  | " + ammo);
     }
 
     public void updateAmmo(int ammoDelta)
