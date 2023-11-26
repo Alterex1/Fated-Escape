@@ -5,8 +5,11 @@ public class Controller : MonoBehaviour
 {
     public CharacterController controller;
 
+    // Audio
     public List<AudioClip> footstepSounds;
+    public AudioClip jumpSound;
     public AudioSource footsteps;
+
 
     public float speed = 15.0f, runSpeed = 25.0f, gravity = -15.0f, jumpForce = 4.0f, groundDistance = 1.0f;
     public Transform groundCheck;
@@ -31,14 +34,9 @@ public class Controller : MonoBehaviour
         float z = Input.GetAxis("Vertical");
 
         if ((x != 0 || z != 0) && !footsteps.isPlaying && isGrounded)
-        {
-            footsteps.mute = false;
-            PlaySound();
-        }
+            PlayFootsteps();
         else if (x == 0 && z == 0)
-        {
-            footsteps.mute = true;
-        }
+            footsteps.Stop();
 
         Vector3 move = transform.right * x + transform.forward * z;
         if (Input.GetKey(KeyCode.LeftShift))
@@ -47,8 +45,10 @@ public class Controller : MonoBehaviour
             controller.Move(move * speed * Time.deltaTime);
         
         if (Input.GetButtonDown("Jump") && (isGrounded || jumpCount < extraJumpCount)) {
-            footsteps.mute = true;
-
+            footsteps.Stop();
+            if (isGrounded)
+                footsteps.PlayOneShot(jumpSound, Random.Range(0.5f, 1f));
+            
             velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
             jumpCount++;
         }
@@ -57,9 +57,8 @@ public class Controller : MonoBehaviour
         controller.Move(velocity * Time.deltaTime);
     }
 
-    private void PlaySound()
+    private void PlayFootsteps()
     {
-        footsteps.mute = false;
         if (Input.GetKey(KeyCode.LeftShift))
             footsteps.pitch = Random.Range(1.45f, 1.55f);
         else
