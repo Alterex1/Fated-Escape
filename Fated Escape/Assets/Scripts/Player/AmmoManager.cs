@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class AmmoManager : MonoBehaviour
 {
-    public Text ammo;
+    public Text[] ammo = new Text[3];
 
     public GameObject[] weaponIndicator = new GameObject[3];
 
@@ -16,7 +16,10 @@ public class AmmoManager : MonoBehaviour
 
     public void setammo(string i)
     {
-        ammo.text = i;
+        for (int y = 0; y < ammo.Length; y++) 
+        {
+            ammo[y].text = i;
+        }
     }
 
     public void setWeaponToDisplay(int e)
