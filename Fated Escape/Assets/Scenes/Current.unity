@@ -2125,6 +2125,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ui: {fileID: 0}
+  weaponType: AR
   fireRate: 10
   cameraGameObject: {fileID: 1538346067}
   bulletEffect: {fileID: 100002, guid: 56bfc2f4b4a0c534c8ef3d0fd1124c44, type: 3}
@@ -8994,6 +8995,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ui: {fileID: 0}
+  weaponType: Shotgun
   fireRate: 2
   cameraGameObject: {fileID: 1538346067}
   bulletEffect: {fileID: 100002, guid: 56bfc2f4b4a0c534c8ef3d0fd1124c44, type: 3}
@@ -11193,11 +11195,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ui: {fileID: 0}
-  fireRate: 4
+  weaponType: SMG
+  fireRate: 20
   cameraGameObject: {fileID: 1538346067}
   bulletEffect: {fileID: 100002, guid: 56bfc2f4b4a0c534c8ef3d0fd1124c44, type: 3}
   reloadAnimationTime: 2.5
-  magazine: 30
+  magazine: 45
   ammo: 0
   mags: 3
   isReloading: 0
