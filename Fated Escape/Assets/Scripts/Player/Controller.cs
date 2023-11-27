@@ -89,23 +89,20 @@ public class Controller : MonoBehaviour
 
     public void switchWeapons(int index)
     {
-        Debug.Log("Switching to weapon: " + index);
-
         for (int i = 0; i < weapons.Length; i++)
         {
             if (i == index - 1)
             {
                 weapons[i].SetActive(true);
-                Debug.Log("Activating weapon: " + i);
             }
             else
             {
                 weapons[i].SetActive(false);
-                Debug.Log("Deactivating weapon: " + i);
             }
         }
         weaponInstance = index;
         gunOnDisplay.setWeaponToDisplay(index - 1);
-    }
 
+        Weapon activeWeapon = weapons[index - 1].GetComponent<Weapon>();
+    }
 }

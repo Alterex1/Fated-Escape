@@ -5,6 +5,7 @@ using UnityEngine;
 public class Weapon : MonoBehaviour
 {
     public AmmoManager ui;
+    public string weaponType;
 
     public float fireRate = 4f;
     public GameObject cameraGameObject;
@@ -61,7 +62,7 @@ public class Weapon : MonoBehaviour
             isReloading = true;
         }
 
-        if (isReloading && reloadTime <= 1)
+        if (isReloading && reloadTime <= 1 && weaponType == "AR")
         {
             reloadTime = 0;
             animations.SetInteger("Reload", -1);
@@ -75,12 +76,41 @@ public class Weapon : MonoBehaviour
                 ui.setammo(magazine + "/" + ammo);
             }
         }
+        if (isReloading && reloadTime <= 1 && weaponType == "Shotgun")
+        {
+            reloadTime = 0;
+            animations.SetInteger("Reload", -1);
+            isReloading = false;
+            ammo = ammo - 6 + magazine;
+            magazine = magazineTemp;
+            if (ammo < 0)
+            {
+                magazine += ammo;
+                ammo = 0;
+                ui.setammo(magazine + "/" + ammo);
+            }
+        }
+
+        if (isReloading && reloadTime <= 1 && weaponType == "SMG")
+        {
+            reloadTime = 0;
+            animations.SetInteger("Reload", -1);
+            isReloading = false;
+            ammo = ammo - 45 + magazine;
+            magazine = magazineTemp;
+            if (ammo < 0)
+            {
+                magazine += ammo;
+                ammo = 0;
+                ui.setammo(magazine + "/" + ammo);
+            }
+        }
         else
         {
             reloadTime -= Time.deltaTime;
         }
 
-        if (Input.GetMouseButton(1)) // Right mouse button
+        if (Input.GetMouseButton(1)) //ADS
         {
             transform.localPosition = Vector3.Lerp(transform.localPosition, aimPosition, positionSpeed * Time.deltaTime);
         }
