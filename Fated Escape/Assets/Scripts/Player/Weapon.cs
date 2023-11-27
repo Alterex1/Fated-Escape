@@ -19,6 +19,10 @@ public class Weapon : MonoBehaviour
     private int magazineTemp;
     public bool isReloading = false;
 
+    public Vector3 normalPosition; // Normal position of the weapon
+    public Vector3 aimPosition; // Position of the weapon when aiming
+    public float positionSpeed = 2f; // Speed of position change
+
     private void Start()
     {
         ui = GameObject.FindGameObjectWithTag("PlayerUI").GetComponent<AmmoManager>();
@@ -75,6 +79,16 @@ public class Weapon : MonoBehaviour
         {
             reloadTime -= Time.deltaTime;
         }
+
+        if (Input.GetMouseButton(1)) // Right mouse button
+        {
+            transform.localPosition = Vector3.Lerp(transform.localPosition, aimPosition, positionSpeed * Time.deltaTime);
+        }
+        else
+        {
+            transform.localPosition = Vector3.Lerp(transform.localPosition, normalPosition, positionSpeed * Time.deltaTime);
+        }
+
     }
 
     private void LateUpdate()

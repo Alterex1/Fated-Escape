@@ -23,6 +23,11 @@ public class Controller : MonoBehaviour
     public float weaponInstance;
     public GameObject[] weapons = new GameObject[3];
 
+    public float normalFOV = 60f; // Normal field of view
+    public float aimFOV = 45f; // Field of view when aiming
+    public float fovSpeed = 2f; // Speed of FOV change
+    private Camera cam; // Camera component
+
     void Update()
     {
         // Player Movement
@@ -64,11 +69,22 @@ public class Controller : MonoBehaviour
         {
             switchWeapons(3);
         }
+        if (Input.GetMouseButton(1)) // Right mouse button
+        {
+            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, aimFOV, fovSpeed * Time.deltaTime);
+        }
+        else
+        {
+            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, normalFOV, fovSpeed * Time.deltaTime);
+        }
+
     }
 
     public void Start()
     {
         switchWeapons(1);
+        cam = GetComponentInChildren<Camera>();
+
     }
 
     public void switchWeapons(int index)
@@ -89,7 +105,6 @@ public class Controller : MonoBehaviour
             }
         }
         weaponInstance = index;
-        Debug.Log("Updating UI for weapon: " + index); // Add this line
         gunOnDisplay.setWeaponToDisplay(index - 1);
     }
 

@@ -2133,6 +2133,9 @@ MonoBehaviour:
   ammo: 0
   mags: 3
   isReloading: 0
+  normalPosition: {x: 0, y: 0.03, z: -0.2}
+  aimPosition: {x: 0.188, y: 0.05, z: -0.02}
+  positionSpeed: 10
 --- !u!114 &444154365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2570,7 +2573,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa98093b6391b844bbaa14d4d3755599, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ammo: {fileID: 0}
+  ammo:
+  - {fileID: 584252088}
+  - {fileID: 70005021}
+  - {fileID: 2098812123}
   weaponIndicator:
   - {fileID: 703567961}
   - {fileID: 578371297}
@@ -3805,6 +3811,10 @@ PrefabInstance:
     - target: {fileID: 1060814048882352, guid: 81a1b22e5248140f197758bdc04e7901, type: 3}
       propertyPath: m_Name
       value: Assault Rifle
+      objectReference: {fileID: 0}
+    - target: {fileID: 1060814048882352, guid: 81a1b22e5248140f197758bdc04e7901, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4227132379109202, guid: 81a1b22e5248140f197758bdc04e7901, type: 3}
       propertyPath: m_LocalPosition.x
@@ -8992,6 +9002,9 @@ MonoBehaviour:
   ammo: 0
   mags: 3
   isReloading: 0
+  normalPosition: {x: 0.1, y: 0.03, z: 0.1}
+  aimPosition: {x: 0.225, y: 0.058, z: -0.02}
+  positionSpeed: 9
 --- !u!114 &1034314349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10545,6 +10558,9 @@ MonoBehaviour:
   - {fileID: 444154361}
   - {fileID: 1034314344}
   - {fileID: 1664659328}
+  normalFOV: 60
+  aimFOV: 45
+  fovSpeed: 2
 --- !u!114 &1481644922
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11185,6 +11201,9 @@ MonoBehaviour:
   ammo: 0
   mags: 3
   isReloading: 0
+  normalPosition: {x: 0.04, y: 0.01, z: -0.108}
+  aimPosition: {x: 0.185, y: 0.019, z: 0}
+  positionSpeed: 10
 --- !u!114 &1664659333
 MonoBehaviour:
   m_ObjectHideFlags: 0
