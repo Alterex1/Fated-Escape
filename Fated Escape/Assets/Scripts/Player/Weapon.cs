@@ -47,10 +47,18 @@ public class Weapon : MonoBehaviour
             animations.SetInteger("Movement", movementValue);
         }
 
-        if (Input.GetMouseButton(0) && Time.time >= readyToFire && !isReloading && magazine > 0)
+        if (Input.GetMouseButton(0) && Time.time >= readyToFire && !isReloading && magazine > 0 && (weaponType == "SMG" || weaponType == "AR"))
         {
             readyToFire = Time.time + 1f / fireRate;
             fire();
+            animations.SetInteger("Fire", 2);
+            animations.SetInteger("Movement", -1);
+        }
+
+        if (Input.GetMouseButtonDown(0) && Time.time >= readyToFire && !isReloading && magazine > 0 && weaponType == "Shotgun")
+        {
+            readyToFire = Time.time + 1f / fireRate;
+            fireShotgun();
             animations.SetInteger("Fire", 2);
             animations.SetInteger("Movement", -1);
         }
@@ -131,10 +139,48 @@ public class Weapon : MonoBehaviour
         RaycastHit hit;
         magazine--;
 
-        if (Physics.Raycast(cameraGameObject.transform.position, cameraGameObject.transform.forward, out hit))
+        float maxDeviationAngle = 2.0f;
+
+        float deviationX = Random.Range(-maxDeviationAngle, maxDeviationAngle);
+        float deviationY = Random.Range(-maxDeviationAngle, maxDeviationAngle);
+
+        Vector3 deviation = new Vector3(deviationX, deviationY, 0);
+        Quaternion rotationWithDeviation = Quaternion.Euler(deviation) * cameraGameObject.transform.rotation;
+        Vector3 directionWithDeviation = rotationWithDeviation * Vector3.forward;
+
+        if (Physics.Raycast(cameraGameObject.transform.position, directionWithDeviation, out hit))
         {
-            Debug.DrawLine(transform.position, hit.point);
+            Debug.DrawLine(transform.position, hit.point, Color.green, 1.0f);
             Instantiate(bulletEffect, hit.point, Quaternion.LookRotation(hit.normal));
         }
     }
+
+
+    private void fireShotgun()
+    {
+        RaycastHit hit;
+        magazine--;
+
+        int pellets = 10;
+        float maxSpreadAngle = 5.0f;
+
+        for (int i = 0; i < pellets; i++)
+        {
+            // Randomize the spread for each pellet within a cone
+            float angle = Random.Range(-maxSpreadAngle, maxSpreadAngle);
+            float angleY = Random.Range(-maxSpreadAngle, maxSpreadAngle);
+
+            // Calculate the spread direction with the forward direction as the central axis
+            Vector3 spreadDirection = Quaternion.Euler(angle, angleY, 0) * cameraGameObject.transform.forward;
+
+            if (Physics.Raycast(cameraGameObject.transform.position, spreadDirection, out hit))
+            {
+                Debug.DrawLine(transform.position, hit.point, Color.red, 1.0f);
+                Instantiate(bulletEffect, hit.point, Quaternion.LookRotation(hit.normal));
+            }
+        }
+    }
+
+
+
 }
