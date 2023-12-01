@@ -3009,6 +3009,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a997e359a64b1d4b9671a054aa89af4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 100
 --- !u!114 &711335772
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8996,10 +8997,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ui: {fileID: 0}
   weaponType: Shotgun
-  fireRate: 2
+  fireRate: 1
   cameraGameObject: {fileID: 1538346067}
   bulletEffect: {fileID: 100002, guid: 56bfc2f4b4a0c534c8ef3d0fd1124c44, type: 3}
-  reloadAnimationTime: 4
+  reloadAnimationTime: 3.7
   magazine: 6
   ammo: 0
   mags: 3

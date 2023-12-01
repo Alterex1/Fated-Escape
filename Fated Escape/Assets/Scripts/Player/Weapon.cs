@@ -166,11 +166,9 @@ public class Weapon : MonoBehaviour
 
         for (int i = 0; i < pellets; i++)
         {
-            // Randomize the spread for each pellet within a cone
             float angle = Random.Range(-maxSpreadAngle, maxSpreadAngle);
             float angleY = Random.Range(-maxSpreadAngle, maxSpreadAngle);
 
-            // Calculate the spread direction with the forward direction as the central axis
             Vector3 spreadDirection = Quaternion.Euler(angle, angleY, 0) * cameraGameObject.transform.forward;
 
             if (Physics.Raycast(cameraGameObject.transform.position, spreadDirection, out hit))
