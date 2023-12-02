@@ -1,24 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Weapon : MonoBehaviour
 {
+    // UI management
+    public GameObject crosshair;
+    public AmmoManager TEMP;
+
     public AmmoManager ui;
     public string weaponType;
 
-    public float fireRate = 4f;
+    // Animation and movement
     public GameObject cameraGameObject;
-    public GameObject bulletEffect;
+    public GameObject bulletEffect, hitEffect;
     private Animator animations;
     private InputManager inputs;
-    private float reloadTime = 0;
-    public float reloadAnimationTime = 2.5f;
-    public int magazine = 30, ammo, mags = 3;
 
+    // Gun related variables
+    public float fireRate = 4f, reloadTime = 0f, reloadAnimationTime = 2.5f;
+    public int magazine, ammo, maxAmmo, magazineCap = 30, magCount = 5;
+
+    public List<AudioClip> gunfireSounds, reloadSounds, levelupSounds;
+    public AudioSource gunSource;
+
+    // Reloading
     private float readyToFire = 0;
-    private int magazineTemp;
     public bool isReloading = false;
+
+
+    // Gun stats
+    public float damage = 10f, damageUpgrade = 5f;
 
     public Vector3 normalPosition; // Normal position of the weapon
     public Vector3 aimPosition; // Position of the weapon when aiming
@@ -26,31 +39,44 @@ public class Weapon : MonoBehaviour
 
     private void Start()
     {
+        // Get components
         ui = GameObject.FindGameObjectWithTag("PlayerUI").GetComponent<AmmoManager>();
         animations = gameObject.GetComponent<Animator>();
         inputs = gameObject.GetComponent<InputManager>();
-        animations.SetInteger("Movement", 0);
-        ammo = magazine * mags;
-        magazineTemp = magazine;
 
+        // Start animations
+        animations.SetInteger("Movement", 0);
+
+        // Determine capacity of current gun
+        magazine = magazineCap;
+        maxAmmo = magazineCap * magCount;
+        ammo = maxAmmo;
+
+        // Update UI
         ui.setammo(magazine + "/" + ammo);
         ui.setWeaponToDisplay(0);
     }
 
     private void Update()
     {
+        // Detect if aiming at enemy
+        RaycastHit hit;
+        if (Physics.Raycast(cameraGameObject.transform.position, cameraGameObject.transform.forward, out hit) && hit.transform.tag == "Enemy")
+            crosshair.GetComponent<Image>().color = new Color(156f / 255f, 14f / 255f, 33f / 255f);
+        else
+            crosshair.GetComponent<Image>().color = new Color(1f, 1f, 1f);
+
         if (Time.time >= readyToFire)
         {
             animations.SetInteger("Fire", -1);
-            // Determine if the player is idle, walking, or sprinting
-            int movementValue = Input.GetKeyDown(KeyCode.LeftShift) ? 2 : (inputs.vertical == 0 && inputs.horizontal == 0) ? 0 : 1;
-            animations.SetInteger("Movement", movementValue);
+            animations.SetInteger("Movement", (inputs.vertical == 0 && inputs.horizontal == 0) ? 0 : 1);
         }
 
         if (Input.GetMouseButton(0) && Time.time >= readyToFire && !isReloading && magazine > 0 && (weaponType == "SMG" || weaponType == "AR"))
         {
-            readyToFire = Time.time + 1f / fireRate;
             fire();
+            PlayFire();
+            readyToFire = Time.time + 1f / fireRate;
             animations.SetInteger("Fire", 2);
             animations.SetInteger("Movement", -1);
         }
@@ -75,14 +101,10 @@ public class Weapon : MonoBehaviour
             reloadTime = 0;
             animations.SetInteger("Reload", -1);
             isReloading = false;
-            ammo = ammo - 30 + magazine;
-            magazine = magazineTemp;
-            if (ammo < 0)
-            {
-                magazine += ammo;
-                ammo = 0;
-                ui.setammo(magazine + "/" + ammo);
-            }
+
+            int delta = Mathf.Min(magazineCap - magazine, ammo);
+            magazine += delta;
+            updateAmmo(-delta);
         }
         if (isReloading && reloadTime <= 1 && weaponType == "Shotgun")
         {
@@ -129,9 +151,66 @@ public class Weapon : MonoBehaviour
 
     }
 
+    private void PlaySound(List<AudioClip> availableSounds)
+    {
+        gunSource.pitch = Random.Range(0.95f, 1.05f);
+        gunSource.PlayOneShot(availableSounds[Random.Range(0, availableSounds.Count)], Random.Range(0.65f, 0.85f));
+    }
+
+    // Sound helper functions
+    public void PlayReload()
+    {
+        PlaySound(reloadSounds);
+    }
+
+    public void PlayFire()
+    {
+        PlaySound(gunfireSounds);
+    }
+
+    public void PlayLevelUp()
+    {
+        PlaySound(levelupSounds);
+    }
+
     private void LateUpdate()
     {
-        ui.setammo(magazine + "/" + ammo);
+        ui.setammo(magazine + "\n  | " + ammo);
+    }
+
+    public void updateAmmo(int ammoDelta)
+    {
+        ammo = Mathf.Max(0, Mathf.Min(ammo + ammoDelta, maxAmmo));
+    }
+
+    // Gun upgrade stats
+    private int kills = 0, currentThreshold = 0;
+
+    public int[] killThreshold =
+    {
+        5,
+        10,
+        20,
+        30
+    };
+
+    public void addKill()
+    {
+        kills++;
+        if (currentThreshold >= killThreshold.Length) return;
+        if (kills == killThreshold[currentThreshold])
+        {
+            Debug.Log("Damage upgraded by " + damageUpgrade);
+            StartCoroutine(LevelUpCoroutine());
+        }
+    }
+
+    private IEnumerator LevelUpCoroutine()
+    {
+        yield return new WaitForSeconds(0.75f);
+        PlayLevelUp();
+        damage += damageUpgrade;
+        currentThreshold++;
     }
 
     private void fire()
@@ -150,8 +229,16 @@ public class Weapon : MonoBehaviour
 
         if (Physics.Raycast(cameraGameObject.transform.position, directionWithDeviation, out hit))
         {
-            Debug.DrawLine(transform.position, hit.point, Color.green, 1.0f);
-            Instantiate(bulletEffect, hit.point, Quaternion.LookRotation(hit.normal));
+            EnemyManager enemyManager = hit.transform.GetComponent<EnemyManager>();
+            if (enemyManager != null)
+            {
+                enemyManager.takeDamage(damage);
+                Instantiate(hitEffect, hit.point, Quaternion.LookRotation(hit.normal));
+            }
+            else
+            {
+                Instantiate(bulletEffect, hit.point, Quaternion.LookRotation(hit.normal));
+            }
         }
     }
 
