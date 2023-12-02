@@ -5,20 +5,23 @@ using UnityEngine;
 public class BossDeath : IState
 {
     private BossReferences boss;
-    private PlayerReference playerReference;
-    public BossDeath(BossReferences bossReferences, PlayerReference playerReference)
+    private AudioManager audio;
+    public BossDeath(BossReferences bossReferences, AudioManager audio)
     {
         this.boss = bossReferences;
-        this.playerReference = playerReference;
+        this.audio = audio;
     }
 
     public void OnEnter()
     {
-        boss.animator.SetBool("isAlive", false);
+        boss.animator.SetBool("IsAlive", false);
+        audio.Death();
+        boss.GetComponent<BossStateMachine>().ComponentGone();
+
     }
     public void OnExit()
     {
-        
+        Debug.Log("he dead");
     }
     public void Tick()
     {

@@ -10,57 +10,46 @@ public class BossRun : IState
 {
     private BossReferences boss;
     private PlayerReference playerReference;
-    float maxTime = 2.0f;
-    float maxDistance = 10.0f;
-    float timer = 0.0f;
-    public BossRun(BossReferences boss, PlayerReference playerReference)
+    private AudioManager audio;
+    float timer;
+    public BossRun(BossReferences boss, PlayerReference playerReference, AudioManager audio)
     {
         this.boss = boss;
         this.playerReference = playerReference;
+        this.audio = audio;
     }
 
     public void OnEnter()
     {
-        Debug.Log("OnEnter is being called");
-        //boss.navMeshagent.SetDestination(playerReference.transform.position);
+        timer = 0.5f;
+        boss.animator.SetFloat("Speed", 0.5f);
     }
     public void OnExit()
     {
         Debug.Log("OnExit is bing called");
         boss.animator.SetFloat("Speed", 0f);
+        audio.WalkStop();
     }
     public void Tick()
     {
-        timer -= Time.deltaTime;
-        if(!boss.navMeshagent.hasPath)
-        {
-            boss.navMeshagent.destination = playerReference.transform.position;
-        }
-      
-        if(timer < 0.0f)
-        {
-            Vector3 direction = (playerReference.transform.position - boss.navMeshagent.destination);
-            direction.y = 0;
-            
-            bool temp = direction.sqrMagnitude > (maxDistance * maxDistance);
-            Debug.Log(temp);
+        
+        boss.transform.position = Vector3.MoveTowards(boss.transform.position, playerReference.transform.position, 8f * Time.deltaTime);
+        
 
-            Debug.Log(direction.sqrMagnitude);
-            if(direction.sqrMagnitude > maxDistance * maxDistance)
-            {
-                bool hello = boss.navMeshagent.pathStatus != NavMeshPathStatus.PathPartial;
-                Debug.Log(hello + " in the other if");
-                if (boss.navMeshagent.pathStatus != NavMeshPathStatus.PathPartial)
-                {
-                    boss.navMeshagent.destination = playerReference.transform.position;
-                    Debug.Log(boss.navMeshagent.pathPending);
-                }
-            }
-            timer = maxTime;
-        }
-        
-        
+        Vector3 targetDirection = playerReference.transform.position - boss.transform.position;
+        Vector3 newDirection = Vector3.RotateTowards(boss.transform.forward, targetDirection, 5f * Time.deltaTime, 0);
+
         //boss.navMeshagent.SetDestination(playerReference.transform.position);
-        boss.animator.SetFloat("Speed", 0.5f);
+        boss.transform.rotation = Quaternion.LookRotation(newDirection);
+
+        timer -= Time.deltaTime;
+        if(timer < 0)
+        {
+            audio.Walk();
+            timer = 0.6f;
+        }
+
+        
     }
+
 }
