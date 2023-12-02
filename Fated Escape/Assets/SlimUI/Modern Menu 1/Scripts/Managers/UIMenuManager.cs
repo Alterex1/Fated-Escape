@@ -121,6 +121,7 @@ namespace SlimUI.ModernMenu{
 			exitMenu.SetActive(false);
 			if(extrasMenu) extrasMenu.SetActive(false);
 			playMenu.SetActive(true);
+			SceneManager.LoadScene("Current");
 		}
 		
 		public void PlayCampaignMobile(){
