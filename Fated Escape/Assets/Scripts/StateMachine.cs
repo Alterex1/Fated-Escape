@@ -19,7 +19,7 @@ using Object = System.Object;
 
 public class StateMachine
 {
-   public IState _currentState;
+   private IState _currentState;
    
    private Dictionary<Type, List<Transition>> _transitions = new Dictionary<Type,List<Transition>>();
    private List<Transition> _currentTransitions = new List<Transition>();

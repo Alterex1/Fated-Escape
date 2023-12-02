@@ -5,10 +5,9 @@ using UnityEngine.UI;
 
 public class AmmoManager : MonoBehaviour
 {
-    public TMPro.TextMeshProUGUI ammoText;
-    public Text[] ammo = new Text[3];
+    public TMPro.TextMeshProUGUI ammo;
 
-    public GameObject[] weaponIndicator = new GameObject[3];
+    public GameObject[] weaponIndicator = new GameObject[1];
 
     private void Start()
     {
@@ -17,22 +16,14 @@ public class AmmoManager : MonoBehaviour
 
     public void setammo(string i)
     {
-        for (int y = 0; y < ammo.Length; y++) 
-        {
-            ammo[y].text = i;
-        }
+        ammo.text = i;
     }
 
     public void setWeaponToDisplay(int e)
     {
         for (int i = 0; i < weaponIndicator.Length; i++)
         {
-            if (i == e)
-            {
-                weaponIndicator[i].SetActive(true);
-            }
-            else
-                weaponIndicator[i].SetActive(false);
+            weaponIndicator[i].SetActive(i == e);
         }
     }
 
