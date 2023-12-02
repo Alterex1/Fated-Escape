@@ -7,7 +7,10 @@ public class Weapon : MonoBehaviour
 {
     // UI management
     public GameObject crosshair;
-    public AmmoManager ammoManager;
+    public AmmoManager TEMP;
+
+    public AmmoManager ui;
+    public string weaponType;
 
     // Animation and movement
     public GameObject cameraGameObject;
@@ -26,13 +29,18 @@ public class Weapon : MonoBehaviour
     private float readyToFire = 0;
     public bool isReloading = false;
 
+
     // Gun stats
     public float damage = 10f, damageUpgrade = 5f;
+
+    public Vector3 normalPosition; // Normal position of the weapon
+    public Vector3 aimPosition; // Position of the weapon when aiming
+    public float positionSpeed = 2f; // Speed of position change
 
     private void Start()
     {
         // Get components
-        ammoManager = GameObject.FindGameObjectWithTag("PlayerUI").GetComponent<AmmoManager>();
+        ui = GameObject.FindGameObjectWithTag("PlayerUI").GetComponent<AmmoManager>();
         animations = gameObject.GetComponent<Animator>();
         inputs = gameObject.GetComponent<InputManager>();
 
@@ -45,8 +53,8 @@ public class Weapon : MonoBehaviour
         ammo = maxAmmo;
 
         // Update UI
-        ammoManager.setammo(magazine + "/" + ammo);
-        ammoManager.setWeaponToDisplay(0);
+        ui.setammo(magazine + "/" + ammo);
+        ui.setWeaponToDisplay(0);
     }
 
     private void Update()
@@ -64,7 +72,7 @@ public class Weapon : MonoBehaviour
             animations.SetInteger("Movement", (inputs.vertical == 0 && inputs.horizontal == 0) ? 0 : 1);
         }
 
-        if (Input.GetMouseButton(0) && Time.time >= readyToFire && !isReloading && magazine > 0)
+        if (Input.GetMouseButton(0) && Time.time >= readyToFire && !isReloading && magazine > 0 && (weaponType == "SMG" || weaponType == "AR"))
         {
             fire();
             PlayFire();
@@ -73,14 +81,22 @@ public class Weapon : MonoBehaviour
             animations.SetInteger("Movement", -1);
         }
 
-        if (Input.GetKeyDown(KeyCode.R) && !isReloading && ammo > 0 && magazine < magazineCap)
+        if (Input.GetMouseButtonDown(0) && Time.time >= readyToFire && !isReloading && magazine > 0 && weaponType == "Shotgun")
+        {
+            readyToFire = Time.time + 1f / fireRate;
+            fireShotgun();
+            animations.SetInteger("Fire", 2);
+            animations.SetInteger("Movement", -1);
+        }
+
+        if (Input.GetKeyDown(KeyCode.R) && !isReloading && ammo > 0 && magazine < magazineTemp)
         {
             reloadTime = reloadAnimationTime;
             animations.SetInteger("Reload", 1);
             isReloading = true;
         }
 
-        if (isReloading && reloadTime <= 1)
+        if (isReloading && reloadTime <= 1 && weaponType == "AR")
         {
             reloadTime = 0;
             animations.SetInteger("Reload", -1);
@@ -90,10 +106,49 @@ public class Weapon : MonoBehaviour
             magazine += delta;
             updateAmmo(-delta);
         }
+        if (isReloading && reloadTime <= 1 && weaponType == "Shotgun")
+        {
+            reloadTime = 0;
+            animations.SetInteger("Reload", -1);
+            isReloading = false;
+            ammo = ammo - 6 + magazine;
+            magazine = magazineTemp;
+            if (ammo < 0)
+            {
+                magazine += ammo;
+                ammo = 0;
+                ui.setammo(magazine + "/" + ammo);
+            }
+        }
+
+        if (isReloading && reloadTime <= 1 && weaponType == "SMG")
+        {
+            reloadTime = 0;
+            animations.SetInteger("Reload", -1);
+            isReloading = false;
+            ammo = ammo - 45 + magazine;
+            magazine = magazineTemp;
+            if (ammo < 0)
+            {
+                magazine += ammo;
+                ammo = 0;
+                ui.setammo(magazine + "/" + ammo);
+            }
+        }
         else
         {
             reloadTime -= Time.deltaTime;
         }
+
+        if (Input.GetMouseButton(1)) //ADS
+        {
+            transform.localPosition = Vector3.Lerp(transform.localPosition, aimPosition, positionSpeed * Time.deltaTime);
+        }
+        else
+        {
+            transform.localPosition = Vector3.Lerp(transform.localPosition, normalPosition, positionSpeed * Time.deltaTime);
+        }
+
     }
 
     private void PlaySound(List<AudioClip> availableSounds)
@@ -120,7 +175,7 @@ public class Weapon : MonoBehaviour
 
     private void LateUpdate()
     {
-        ammoManager.setammo(magazine + "\n  | " + ammo);
+        ui.setammo(magazine + "\n  | " + ammo);
     }
 
     public void updateAmmo(int ammoDelta)
@@ -163,7 +218,16 @@ public class Weapon : MonoBehaviour
         RaycastHit hit;
         magazine--;
 
-        if (Physics.Raycast(cameraGameObject.transform.position, cameraGameObject.transform.forward, out hit))
+        float maxDeviationAngle = 2.0f;
+
+        float deviationX = Random.Range(-maxDeviationAngle, maxDeviationAngle);
+        float deviationY = Random.Range(-maxDeviationAngle, maxDeviationAngle);
+
+        Vector3 deviation = new Vector3(deviationX, deviationY, 0);
+        Quaternion rotationWithDeviation = Quaternion.Euler(deviation) * cameraGameObject.transform.rotation;
+        Vector3 directionWithDeviation = rotationWithDeviation * Vector3.forward;
+
+        if (Physics.Raycast(cameraGameObject.transform.position, directionWithDeviation, out hit))
         {
             EnemyManager enemyManager = hit.transform.GetComponent<EnemyManager>();
             if (enemyManager != null)
@@ -177,4 +241,31 @@ public class Weapon : MonoBehaviour
             }
         }
     }
+
+
+    private void fireShotgun()
+    {
+        RaycastHit hit;
+        magazine--;
+
+        int pellets = 10;
+        float maxSpreadAngle = 5.0f;
+
+        for (int i = 0; i < pellets; i++)
+        {
+            float angle = Random.Range(-maxSpreadAngle, maxSpreadAngle);
+            float angleY = Random.Range(-maxSpreadAngle, maxSpreadAngle);
+
+            Vector3 spreadDirection = Quaternion.Euler(angle, angleY, 0) * cameraGameObject.transform.forward;
+
+            if (Physics.Raycast(cameraGameObject.transform.position, spreadDirection, out hit))
+            {
+                Debug.DrawLine(transform.position, hit.point, Color.red, 1.0f);
+                Instantiate(bulletEffect, hit.point, Quaternion.LookRotation(hit.normal));
+            }
+        }
+    }
+
+
+
 }
