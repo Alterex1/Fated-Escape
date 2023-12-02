@@ -10,7 +10,7 @@ public class BossStateMachine : MonoBehaviour
     private PlayerReference playerReference;
 
     private new AudioManager audio;
-    private StateMachine stateMachine;
+    public StateMachine stateMachine;
     [HideInInspector]
     public float health;
     private float half;
@@ -22,7 +22,7 @@ public class BossStateMachine : MonoBehaviour
         playerReference = FindObjectOfType<PlayerReference>();
         audio = GetComponent<AudioManager>();
 
-        health = 250.0f;
+        health = 2000.0f;
         half = health/2;
 
         stateMachine = new StateMachine();
@@ -67,8 +67,8 @@ public class BossStateMachine : MonoBehaviour
     void Update()
     {
         stateMachine.Tick();
-        Debug.Log(stateMachine._currentState);
-        Debug.Log(health);
+        // Debug.Log(stateMachine._currentState);
+        // Debug.Log(health);
     }
 
     public void ComponentGone()

@@ -30,7 +30,7 @@ public class EnemyRun : IState
 
     public bool HasArrived()
     {
-        return enemy1.navMeshagent.remainingDistance < 3f;
+        return enemy1.navMeshagent.remainingDistance < 2f;
     }
     
 }

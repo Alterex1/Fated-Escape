@@ -24,13 +24,12 @@ public class EnemyAttack : IState
         //     enemyReferences.navMeshagent.SetDestination(playerReference.transform.position);
         // }
 
-        
-        bool hello = enemyReferences.navMeshagent.SetDestination(playerReference.transform.position);
+        enemyReferences.navMeshagent.SetDestination(playerReference.transform.position);
     }
 
     public bool isGone()
     {
-        return enemyReferences.navMeshagent.remainingDistance > 2f;
+        return enemyReferences.navMeshagent.remainingDistance > 3.5f;
     }
     
 }
