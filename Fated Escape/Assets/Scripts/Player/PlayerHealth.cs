@@ -24,15 +24,13 @@ public class PlayerHealth : MonoBehaviour
     public float fadeSpeed;
     private float durationTimer;
 
-    [Header("Misc")]
-    public float invincibilitySeconds = 0.05f;
+    private const float invincibilitySeconds = 0.05f;
 
 
     // Start is called before the first frame update
     void Start()
     {
         health = maxHealth;
-        overlay.color = new Color(overlay.color.r, overlay.color.g, overlay.color.b, 0);
     }
 
     // Update is called once per frame
